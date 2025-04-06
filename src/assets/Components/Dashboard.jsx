@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react'; // Import useState
+import ChatPopup from './ChatPopup'; // Import the new component
 
-// Sample data matching the structure in the image
-// Replace with your actual data source if needed
+// Sample data (keep as is, but ensure paths are correct for your setup)
 const incidentData = [
-  {
+  // ... (your incident data remains here)
+   {
     id: 1,
-    image: 'src/assets/images/img1.png',
+    image: 'src/assets/images/img1.png', // Assuming images are in public folder now based on prev steps
     tag: 'Blizzard',
     title: 'Whitechapel Rd.',
     location: 'Tulare County, Los Angles, CA 23415',
@@ -53,31 +54,28 @@ const incidentData = [
   },
 ];
 
-// Placeholder path for the icon inside the tag
-const tagIconPath = '/house-icon.png'; // <-- *** UPDATE THIS PATH ***
+// Path for the icon inside the tag
+const tagIconPath = '/billzard.png'; // Use the correct blizzard icon path
 
+// --- IncidentCard Component (Keep as is) ---
 function IncidentCard({ incident }) {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden transition-shadow duration-300 hover:shadow-lg">
-      {/* Image Section with Tag Overlay */}
       <div className="relative">
         <img
           src={incident.image}
           alt={`Incident at ${incident.title}`}
-          className="w-full h-48 object-cover" // Adjust h-48 if needed
+          className="w-full h-48 object-cover"
         />
-        {/* Tag/Badge */}
         <div className="absolute top-2 right-2 bg-white rounded-full px-2.5 py-1 text-xs font-medium flex items-center space-x-1 shadow">
           <img
-             src={tagIconPath} // *** MAKE SURE THIS PATH IS CORRECT ***
-             alt="" // Alt text can be empty for decorative icons
-             className="h-3 w-3" // Adjust size as needed
+             src={tagIconPath}
+             alt=""
+             className="h-3.5 w-3.5"
           />
           <span className="text-gray-700">{incident.tag}</span>
         </div>
       </div>
-
-      {/* Content Section */}
       <div className="p-4">
         <h3 className="text-base font-semibold text-gray-800 mb-1 truncate">
           {incident.title}
@@ -93,19 +91,40 @@ function IncidentCard({ incident }) {
   );
 }
 
-
+// --- Dashboard Component (Modified) ---
 function Dashboard() {
+  // State to control chat popup visibility
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
   return (
-    <div className="p-6 bg-gray-100"> {/* Optional: Add bg-gray-100 if needed */}
-      {/* Grid Container */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {/* Map over the data to create cards */}
-        {incidentData.map((incident) => (
-          <IncidentCard key={incident.id} incident={incident} />
-        ))}
+    // Use Fragment to avoid adding an extra unnecessary div to the DOM
+    <>
+      <div className="p-6 bg-gray-100 min-h-screen"> {/* Added min-h-screen for context */}
+        {/* Grid Container */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {/* Map over the data to create cards */}
+          {incidentData.map((incident) => (
+            <IncidentCard key={incident.id} incident={incident} />
+          ))}
+        </div>
       </div>
-       {/* You might add pagination or other elements here later */}
-    </div>
+
+      {/* Floating Action Button (FAB) */}
+      <button
+        onClick={() => setIsChatOpen(!isChatOpen)} // Toggle chat visibility
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 md:bottom-8 md:right-8 z-50
+                   w-14 h-14 bg-orange-500 rounded-full text-white
+                   flex items-center justify-center text-2xl font-bold
+                   shadow-lg hover:bg-orange-600 transition-colors duration-200
+                   focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+        aria-label={isChatOpen ? "Close chat" : "Open chat"} // Accessibility label
+      >
+        C
+      </button>
+
+      {/* Conditionally render the Chat Popup */}
+      {isChatOpen && <ChatPopup onClose={() => setIsChatOpen(false)} />}
+    </>
   );
 }
 
